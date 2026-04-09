@@ -15,6 +15,7 @@ export default function Header() {
   const links = [
     { href: '/soumission', label: 'Soumission' },
     { href: '/boutique', label: 'Boutique' },
+    { href: '/services', label: 'Services' },
     { href: '/reserver', label: 'Réserver' },
   ];
 
