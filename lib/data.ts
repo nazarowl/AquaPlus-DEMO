@@ -220,6 +220,7 @@ export interface Product {
   desc: string;
   price: number;
   badge?: string;
+  image?: string;
 }
 
 export const PRODUCTS: Product[] = [

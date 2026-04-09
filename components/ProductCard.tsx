@@ -146,11 +146,15 @@ export default function ProductCard({ product, index }: ProductCardProps) {
       className="bg-white rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden"
     >
       {/* Product visual */}
-      <div className={`h-[200px] bg-gradient-to-br ${gradient} flex items-center justify-center relative p-6`}>
-        <div
-          className="w-24 h-24 transition-transform duration-300 group-hover:scale-110"
-          dangerouslySetInnerHTML={{ __html: icon }}
-        />
+      <div className={`h-[200px] ${product.image ? 'bg-light-gray' : `bg-gradient-to-br ${gradient}`} flex items-center justify-center relative p-6 overflow-hidden`}>
+        {product.image ? (
+          <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
+        ) : (
+          <div
+            className="w-24 h-24 transition-transform duration-300 group-hover:scale-110"
+            dangerouslySetInnerHTML={{ __html: icon }}
+          />
+        )}
         {product.badge && (
           <span
             className={`absolute top-3 right-3 px-3 py-1 rounded-full text-[11px] font-semibold uppercase text-white ${

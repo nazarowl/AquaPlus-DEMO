@@ -1,14 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { PRODUCTS, CATEGORIES } from '@/lib/data';
+import type { Product } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
 
 export default function BoutiquePage() {
   const [activeCat, setActiveCat] = useState('Tout');
+  const [customProducts, setCustomProducts] = useState<Product[]>([]);
 
-  const filtered = activeCat === 'Tout' ? PRODUCTS : PRODUCTS.filter((p) => p.cat === activeCat);
+  const loadCustom = useCallback(() => {
+    const raw = localStorage.getItem('aquaplus-custom-products');
+    setCustomProducts(raw ? JSON.parse(raw) : []);
+  }, []);
+
+  useEffect(() => {
+    loadCustom();
+    window.addEventListener('products-updated', loadCustom);
+    return () => window.removeEventListener('products-updated', loadCustom);
+  }, [loadCustom]);
+
+  const allProducts = [...PRODUCTS, ...customProducts];
+  const filtered = activeCat === 'Tout' ? allProducts : allProducts.filter((p) => p.cat === activeCat);
 
   return (
     <div className="min-h-screen">
