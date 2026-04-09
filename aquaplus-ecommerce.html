@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AquaPlus — Piscines et Spas</title>
+<!--
+  ============================================================
+  FILE-TO-MODEL MAPPING (AQUARINO MODELES 3D → Spec Models)
+  ============================================================
+  AQUARINO_Diamant_810_8x10_low.png      → Diamant 8x10'
+  AQUARINO_Larimar_1025_10x25_low.png    → Larimar 10x25'
+  AQUARINO_Lazuli_1228_12x28_low.png     → Lazuli 12x28'
+  AQUARINO_Lazuli_1232_12x32_low.png     → Lazuli 12x32'
+  AQUARINO_Opale_816_8x16_low.png        → Opale 8x16'
+  AQUARINO_Opale_1220_12x20_low.png      → Opale 12x20'
+  AQUARINO_Perla_1224b_12x24b_low.png    → Perla 12x24'
+  AQUARINO_Quartz_1431_14x31_low.png     → Quartz 14x31'
+  AQUARINO_Quartz_1436_14x36_low.png     → Quartz 14x36'
+  AQUARINO_Saphir_1431_14x31_low.png     → Saphir 14x31'
+  AQUARINO_Saphir_1436_14x36_low.png     → Saphir 14x36'
+  AQUARINO_Tanza_811_8x11_low.png        → Tanza 8x11'
+  AQUARINO_Tanza_88_8x8_low.png          → Tanza (alternate)
+  AQUARINO_Topaze_814_8x14_low.png       → Topaze 8x14'
+  AQUARINO_Topaze_1220_12x20_low.png     → Topaze 12x20'
+  AQUARINO_Topaze_1224_12x24_low.png     → Topaze 12x24'
+  AQUARINO_Topaze_1226_12x26_low.png     → Topaze 12x26'
+  AQUARINO_Zircon_1222_12x22_low.png     → Zircon 12x22'
+  AQUARINO_Zircon_1227_12x27_low.png     → Zircon 12x27'
+
+  No matching 3D images for Spa models (Hollow, Roslyn, Trent, York)
+  — these use SVG placeholder icons.
+  ============================================================
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Parkinsans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1C355E;--accent:#79C7EE;--cta:#238DC1;--cta-hover:#0B6A9A;
+  --pale-blue:#B9E3F8;--white:#FFFFFF;--light-gray:#F4F4F4;
+  --text-dark:#112337;--text-secondary:#6C6E70;--border:#E0E0E0;
+  --success:#28A745;--warning:#F5A623;--error:#C02B0A;
+  --radius-btn:8px;--radius-card:12px;--radius-modal:16px;
+  --shadow:0 2px 12px rgba(0,0,0,0.08);--transition:all 0.3s ease;
+  --font-heading:'Parkinsans',serif;--font-body:'Figtree',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);color:var(--text-dark);background:var(--light-gray);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-heading)}
+button{cursor:pointer;font-family:var(--font-body);border:none;outline:none}
+input,select,textarea{font-family:var(--font-body);outline:none}
+a{text-decoration:none;color:inherit}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:1000;background:var(--navy);height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.logo{display:flex;flex-direction:column;line-height:1.1}
+.logo-main{font-family:var(--font-heading);font-size:24px;font-weight:700}
+.logo-main .aqua{color:var(--white)}
+.logo-main .plus{color:var(--accent)}
+.logo-sub{font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;font-variant:small-caps}
+.nav{display:flex;align-items:center;gap:32px}
+.nav-link{color:var(--white);font-size:15px;font-weight:500;cursor:pointer;transition:var(--transition);padding:8px 0;border-bottom:2px solid transparent}
+.nav-link:hover,.nav-link.active{color:var(--accent);border-bottom-color:var(--accent)}
+.cart-btn{position:relative;background:none;color:var(--white);font-size:22px;padding:8px;cursor:pointer}
+.cart-badge{position:absolute;top:0;right:-4px;background:var(--cta);color:var(--white);font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+.cart-badge.bounce{animation:badgeBounce 0.4s ease}
+@keyframes badgeBounce{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.cart-badge:empty,.cart-badge[data-count="0"]{display:none}
+
+/* CONTAINER */
+.container{max-width:1200px;margin:0 auto;padding:24px}
+.view{display:none}
+.view.active{display:block}
+
+/* PROGRESS BAR */
+.progress-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:32px;padding:16px 0}
+.progress-step{display:flex;align-items:center;gap:8px}
+.progress-circle{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;transition:var(--transition)}
+.progress-circle.active{background:var(--cta);color:var(--white)}
+.progress-circle.done{background:var(--success);color:var(--white)}
+.progress-circle.pending{background:var(--border);color:var(--text-secondary)}
+.progress-label{font-size:13px;color:var(--text-secondary)}
+.progress-step.active .progress-label{color:var(--text-dark);font-weight:600}
+.progress-line{width:40px;height:2px;background:var(--border)}
+.progress-line.done{background:var(--success)}
+
+/* BACK BUTTON */
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--cta);font-size:14px;font-weight:500;cursor:pointer;margin-bottom:16px;background:none;padding:8px 0;transition:var(--transition)}
+.back-btn:hover{color:var(--cta-hover)}
+
+/* QUOTE BUILDER */
+.quote-intro{text-align:center;padding:48px 0}
+.quote-intro h2{font-size:32px;color:var(--navy);margin-bottom:8px}
+.quote-intro p{font-size:16px;color:var(--text-secondary)}
+.type-cards{display:flex;justify-content:center;gap:40px;margin-top:32px;flex-wrap:wrap}
+.type-card{width:300px;height:400px;background:var(--white);border-radius:var(--radius-card);box-shadow:var(--shadow);cursor:pointer;overflow:hidden;transition:var(--transition);border:2px solid transparent;display:flex;flex-direction:column}
+.type-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,0.12);border-color:var(--accent)}
+.type-card-img{height:200px;background:var(--pale-blue);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.type-card-img img{width:100%;height:100%;object-fit:cover}
+.type-card-img svg{width:80px;height:80px;opacity:0.5}
+.type-card-body{padding:24px;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center;gap:8px}
+.type-card-body h3{font-size:22px;color:var(--navy)}
+.type-card-body .price-from{font-size:14px;color:var(--text-secondary)}
+.type-card-body .price-from strong{font-size:20px;color:var(--navy)}
+.type-card-body .cta-link{color:var(--cta);font-weight:600;font-size:15px;margin-top:8px}
+
+/* MODEL CARDS */
+.model-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.model-card{background:var(--white);border-radius:var(--radius-card);box-shadow:var(--shadow);cursor:pointer;overflow:hidden;transition:var(--transition);border:2px solid transparent}
+.model-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.model-card.selected{border-color:var(--cta);background:rgba(35,141,193,0.05)}
+.model-card-img{height:140px;background:var(--pale-blue);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.model-card-img img{width:100%;height:100%;object-fit:cover}
+.model-card-body{padding:16px;text-align:center}
+.model-card-body h4{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.model-card-body .size{font-size:13px;color:var(--text-secondary)}
+.model-card-body .price{font-size:16px;font-weight:700;color:var(--navy);margin-top:6px}
+
+/* SIZE SELECTOR */
+.size-selector{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px}
+.size-option{padding:12px 24px;border:2px solid var(--border);border-radius:var(--radius-btn);cursor:pointer;transition:var(--transition);background:var(--white);font-weight:500}
+.size-option:hover{border-color:var(--accent)}
+.size-option.selected{border-color:var(--cta);background:rgba(35,141,193,0.05);color:var(--cta)}
+
+/* COLOR SWATCHES */
+.color-section{margin-bottom:24px}
+.color-section h4{font-size:14px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.color-grid{display:flex;gap:16px;flex-wrap:wrap}
+.color-swatch{width:100px;height:80px;border-radius:var(--radius-btn);cursor:pointer;transition:var(--transition);border:3px solid transparent;position:relative;overflow:hidden}
+.color-swatch:hover{transform:scale(1.05)}
+.color-swatch.selected{border-color:var(--cta)}
+.color-swatch .check{position:absolute;top:4px;right:4px;width:20px;height:20px;background:var(--cta);border-radius:50%;display:none;align-items:center;justify-content:center;color:var(--white);font-size:12px}
+.color-swatch.selected .check{display:flex}
+.color-label{text-align:center;font-size:12px;color:var(--text-secondary);margin-top:6px}
+.color-price{text-align:center;font-size:11px;color:var(--cta);font-weight:600}
+.color-item{display:flex;flex-direction:column;align-items:center}
+
+/* ADD-ONS */
+.addon-list{display:flex;flex-direction:column;gap:8px;margin-bottom:100px}
+.addon-row{display:flex;align-items:center;padding:16px 20px;background:var(--white);border-radius:var(--radius-btn);cursor:pointer;transition:var(--transition);border-left:3px solid transparent;gap:16px}
+.addon-row:hover{background:rgba(121,199,238,0.08)}
+.addon-row.checked{border-left-color:var(--cta);background:rgba(35,141,193,0.04)}
+.addon-row input[type="checkbox"]{width:20px;height:20px;accent-color:var(--cta);cursor:pointer;flex-shrink:0}
+.addon-row .addon-name{flex:1;font-size:15px;font-weight:500}
+.addon-row .addon-price{font-size:15px;font-weight:600;color:var(--navy);white-space:nowrap}
+.addon-row .addon-note{font-size:13px;color:var(--warning);font-style:italic}
+
+/* STICKY PRICE BAR */
+.sticky-price-bar{position:fixed;bottom:0;left:0;right:0;height:80px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 32px;z-index:900;transform:translateY(100%);transition:transform 0.3s ease;box-shadow:0 -4px 12px rgba(0,0,0,0.2)}
+.sticky-price-bar.visible{transform:translateY(0)}
+.sticky-price-bar .left{color:var(--white)}
+.sticky-price-bar .left span{font-size:14px;display:block}
+.sticky-price-bar .left strong{font-size:24px}
+.sticky-price-bar .right .btn-summary{background:var(--white);color:var(--navy);padding:14px 28px;border-radius:var(--radius-btn);font-weight:600;font-size:15px;transition:var(--transition)}
+.sticky-price-bar .right .btn-summary:hover{background:var(--light-gray)}
+
+/* SUMMARY CARD */
+.summary-card{background:var(--white);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:32px;max-width:700px;margin:0 auto}
+.summary-card h3{font-size:20px;color:var(--navy);margin-bottom:20px;text-align:center}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;font-size:15px}
+.summary-row.total{font-size:18px;font-weight:700;border-top:2px solid var(--navy);padding-top:12px;margin-top:8px}
+.summary-divider{border-top:1px solid var(--border);margin:12px 0}
+.summary-note{text-align:center;font-size:13px;color:var(--text-secondary);margin-top:20px;padding:12px;background:var(--light-gray);border-radius:var(--radius-btn)}
+.summary-actions{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:24px}
+.btn-primary{background:var(--cta);color:var(--white);padding:14px 32px;border-radius:var(--radius-btn);font-weight:600;font-size:16px;width:100%;max-width:400px;transition:var(--transition);text-align:center}
+.btn-primary:hover{background:var(--cta-hover)}
+.btn-secondary{background:var(--white);color:var(--cta);padding:14px 32px;border-radius:var(--radius-btn);font-weight:600;font-size:16px;border:2px solid var(--cta);width:100%;max-width:400px;transition:var(--transition);text-align:center}
+.btn-secondary:hover{background:rgba(35,141,193,0.05)}
+.btn-text{color:var(--cta);font-weight:500;font-size:14px;cursor:pointer;background:none;padding:8px}
+.btn-text:hover{color:var(--cta-hover)}
+
+/* MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(28,53,94,0.8);z-index:2000;display:none;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s ease}
+.modal-overlay.open{display:flex;opacity:1}
+.modal{background:var(--white);border-radius:var(--radius-modal);max-width:600px;width:90%;max-height:90vh;overflow-y:auto;padding:32px;position:relative;transform:translateY(20px);transition:transform 0.4s ease}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-close{position:absolute;top:16px;right:16px;background:none;font-size:24px;color:var(--text-secondary);cursor:pointer;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:var(--transition)}
+.modal-close:hover{background:var(--light-gray);color:var(--text-dark)}
+.modal h3{text-align:center;font-size:22px;color:var(--navy);margin-bottom:24px}
+
+/* FORMS */
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:14px;color:var(--text-secondary);margin-bottom:6px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;height:48px;border:1px solid var(--border);border-radius:var(--radius-btn);padding:0 16px;font-size:15px;transition:var(--transition)}
+.form-group textarea{height:100px;padding:12px 16px;resize:vertical}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--cta);box-shadow:0 0 0 3px rgba(35,141,193,0.1)}
+.form-group input.error,.form-group select.error{border-color:var(--error)}
+.form-group input.valid{border-color:var(--success)}
+.form-group .error-msg{color:var(--error);font-size:12px;margin-top:4px;display:none}
+.form-group input.error~.error-msg,.form-group select.error~.error-msg{display:block}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.config-summary{background:var(--light-gray);border-radius:var(--radius-btn);padding:16px;margin:20px 0;font-size:14px;color:var(--text-secondary)}
+
+/* SUCCESS STATE */
+.success-state{text-align:center;padding:32px 0}
+.success-check{width:80px;height:80px;border-radius:50%;background:var(--success);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;animation:scaleIn 0.5s ease-out}
+.success-check svg{width:40px;height:40px;color:var(--white)}
+@keyframes scaleIn{0%{transform:scale(0)}100%{transform:scale(1)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(40,167,69,0.4)}50%{box-shadow:0 0 0 20px rgba(40,167,69,0)}}
+.success-check{animation:scaleIn 0.5s ease-out,pulse 1.5s ease 0.5s}
+.success-state h3{font-size:24px;color:var(--navy);margin-bottom:12px}
+.success-state p{color:var(--text-secondary);font-size:15px;margin-bottom:8px}
+
+/* BOUTIQUE */
+.boutique-header{text-align:center;padding:32px 0 24px}
+.boutique-header h2{font-size:28px;color:var(--navy)}
+.boutique-header p{color:var(--text-secondary);font-size:15px;margin-top:4px}
+.category-filter{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:32px;padding:0 16px}
+.pill{padding:10px 20px;border-radius:24px;font-size:14px;font-weight:500;cursor:pointer;transition:var(--transition);border:1px solid var(--border);background:var(--white);color:var(--navy);white-space:nowrap}
+.pill:hover{border-color:var(--accent)}
+.pill.active{background:var(--cta);color:var(--white);border-color:var(--cta)}
+.product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.product-card{background:var(--white);border-radius:var(--radius-card);box-shadow:var(--shadow);overflow:hidden;transition:var(--transition)}
+.product-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1)}
+.product-img{height:200px;background:var(--light-gray);display:flex;align-items:center;justify-content:center;position:relative}
+.product-img svg{width:64px;height:64px;opacity:0.3}
+.product-badge{position:absolute;top:12px;right:12px;padding:4px 12px;border-radius:12px;font-size:11px;font-weight:600;text-transform:uppercase}
+.product-badge.populaire{background:var(--warning);color:var(--white)}
+.product-badge.nouveau{background:var(--success);color:var(--white)}
+.product-body{padding:16px}
+.product-body h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.product-body .desc{font-size:13px;color:var(--text-secondary);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:36px}
+.product-body .price{font-size:18px;font-weight:700;color:var(--navy);margin:10px 0}
+.btn-add{width:100%;padding:10px;background:var(--cta);color:var(--white);border-radius:var(--radius-btn);font-weight:600;font-size:14px;transition:var(--transition);height:40px}
+.btn-add:hover{background:var(--cta-hover)}
+.btn-add.added{background:var(--success)}
+.empty-state{text-align:center;padding:60px 20px;color:var(--text-secondary)}
+.empty-state svg{width:64px;height:64px;opacity:0.3;margin-bottom:16px}
+.empty-state p{font-size:16px;margin-bottom:12px}
+.empty-state a{color:var(--cta);font-weight:500;cursor:pointer}
+
+/* CART SIDEBAR */
+.cart-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1500;display:none;opacity:0;transition:opacity 0.3s ease}
+.cart-overlay.open{display:block;opacity:1}
+.cart-sidebar{position:fixed;top:0;right:0;bottom:0;width:400px;max-width:90vw;background:var(--white);z-index:1600;transform:translateX(100%);transition:transform 0.3s ease;display:flex;flex-direction:column}
+.cart-sidebar.open{transform:translateX(0)}
+.cart-sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.cart-sidebar-header h3{font-size:18px;color:var(--navy)}
+.cart-items{flex:1;overflow-y:auto;padding:16px 24px}
+.cart-item{display:flex;gap:12px;padding:16px 0;border-bottom:1px solid var(--border)}
+.cart-item-img{width:60px;height:60px;background:var(--light-gray);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cart-item-img svg{width:30px;height:30px;opacity:0.3}
+.cart-item-info{flex:1}
+.cart-item-info h4{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:8px}
+.cart-item-info .cart-item-price{font-size:15px;font-weight:600;color:var(--navy)}
+.qty-controls{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.qty-btn{width:32px;height:32px;border-radius:50%;background:var(--light-gray);color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;cursor:pointer;transition:var(--transition);border:none}
+.qty-btn:hover{background:var(--border)}
+.qty-val{font-size:15px;font-weight:600;min-width:20px;text-align:center}
+.cart-remove{color:var(--error);font-size:13px;cursor:pointer;background:none;border:none;font-weight:500;margin-top:4px}
+.cart-remove:hover{text-decoration:underline}
+.cart-footer{padding:20px 24px;border-top:1px solid var(--border);background:var(--light-gray)}
+.cart-footer .row{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+.cart-footer .row.total{font-size:16px;font-weight:700;border-top:1px solid var(--border);padding-top:12px;margin-top:8px}
+.cart-footer .btn-checkout{width:100%;margin-top:16px;padding:14px;background:var(--cta);color:var(--white);border-radius:var(--radius-btn);font-weight:600;font-size:15px;transition:var(--transition)}
+.cart-footer .btn-checkout:hover{background:var(--cta-hover)}
+.cart-footer .continue-link{display:block;text-align:center;color:var(--cta);font-size:14px;margin-top:12px;cursor:pointer}
+.cart-empty{text-align:center;padding:60px 20px;color:var(--text-secondary)}
+.cart-empty svg{width:64px;height:64px;opacity:0.3;margin-bottom:16px}
+
+/* CHECKOUT */
+.checkout-container{max-width:800px;margin:0 auto}
+.checkout-container h2{text-align:center;font-size:24px;color:var(--navy);margin-bottom:24px}
+.shipping-options{display:flex;flex-direction:column;gap:12px;margin-bottom:24px}
+.shipping-option{display:flex;align-items:center;padding:16px 20px;border:2px solid var(--border);border-radius:var(--radius-card);cursor:pointer;transition:var(--transition);gap:16px}
+.shipping-option:hover{border-color:var(--accent)}
+.shipping-option.selected{border-color:var(--cta);background:rgba(35,141,193,0.04)}
+.shipping-option input[type="radio"]{accent-color:var(--cta);width:18px;height:18px}
+.shipping-option .info{flex:1}
+.shipping-option .info h4{font-size:15px;font-weight:600;color:var(--navy)}
+.shipping-option .info p{font-size:13px;color:var(--text-secondary)}
+.shipping-option .ship-price{font-weight:600;color:var(--navy);font-size:15px;white-space:nowrap}
+.order-summary-box{background:var(--light-gray);border-radius:var(--radius-card);padding:24px;margin-top:24px}
+.payment-form .card-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* BOOKING */
+.booking-header{text-align:center;padding:32px 0 16px}
+.booking-header h2{font-size:28px;color:var(--navy)}
+.booking-config{text-align:center;font-size:15px;color:var(--text-secondary);margin-bottom:32px;background:var(--white);padding:16px;border-radius:var(--radius-card);max-width:500px;margin-left:auto;margin-right:auto}
+.period-cards{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.period-card{width:250px;background:var(--white);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:24px;text-align:center;cursor:pointer;transition:var(--transition);border:2px solid transparent}
+.period-card:hover{border-color:var(--accent)}
+.period-card.selected{border-color:var(--cta)}
+.period-card.disabled{opacity:0.5;cursor:not-allowed}
+.period-card h4{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.period-card .period-dates{font-size:14px;color:var(--text-secondary);margin-bottom:12px}
+.period-card .avail{font-size:14px;font-weight:500}
+.avail-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.avail-dot.green{background:var(--success)}
+.avail-dot.orange{background:var(--warning)}
+.avail-dot.gray{background:var(--text-secondary)}
+.deposit-options{display:flex;flex-direction:column;gap:16px;max-width:500px;margin:0 auto 32px}
+.deposit-card{padding:20px 24px;border:2px solid var(--border);border-radius:var(--radius-card);cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:16px;position:relative}
+.deposit-card:hover{border-color:var(--accent)}
+.deposit-card.selected{border-color:var(--cta);background:rgba(35,141,193,0.04)}
+.deposit-card input[type="radio"]{accent-color:var(--cta);width:18px;height:18px}
+.deposit-card .info h4{font-size:16px;font-weight:600;color:var(--navy)}
+.deposit-card .info .dep-price{font-size:20px;font-weight:700;color:var(--cta)}
+.deposit-card .info p{font-size:13px;color:var(--text-secondary)}
+.deposit-card .pop-badge{position:absolute;top:-10px;right:16px;background:var(--accent);color:var(--navy);font-size:11px;font-weight:600;padding:4px 12px;border-radius:12px}
+.deposit-note{text-align:center;font-size:13px;color:var(--text-secondary);margin-bottom:24px;max-width:500px;margin-left:auto;margin-right:auto}
+.week-selector{max-width:400px;margin:0 auto 32px}
+.week-selector select{width:100%;height:48px;border:1px solid var(--border);border-radius:var(--radius-btn);padding:0 16px;font-size:15px}
+
+/* CONFIRMATION CARD */
+.confirm-card{background:var(--white);border-radius:var(--radius-card);box-shadow:var(--shadow);padding:32px;max-width:600px;margin:0 auto;text-align:center}
+.confirm-card .row{display:flex;justify-content:space-between;text-align:left;font-size:14px;padding:6px 0}
+.confirm-card .steps{text-align:left;margin-top:20px;padding:16px;background:var(--light-gray);border-radius:var(--radius-btn);font-size:14px;color:var(--text-secondary)}
+
+/* TOAST */
+.toast{position:fixed;top:80px;right:20px;background:var(--navy);color:var(--white);padding:14px 24px;border-radius:var(--radius-btn);font-size:14px;z-index:3000;transform:translateX(120%);transition:transform 0.3s ease;box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+.toast.show{transform:translateX(0)}
+
+/* STEP TRANSITION */
+.step-content{position:relative}
+
+/* RESPONSIVE */
+@media(max-width:1023px){
+  .model-grid{grid-template-columns:repeat(2,1fr)}
+  .product-grid{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .type-cards{gap:20px}
+  .type-card{width:260px;height:360px}
+  .nav{gap:20px}
+}
+@media(max-width:767px){
+  .header{padding:0 16px;height:60px}
+  .logo-main{font-size:20px}
+  .nav-link{font-size:13px}
+  .nav{gap:12px}
+  .model-grid{grid-template-columns:1fr}
+  .product-grid{grid-template-columns:1fr}
+  .type-cards{flex-direction:column;align-items:center}
+  .type-card{width:100%;max-width:300px;height:auto}
+  .container{padding:16px}
+  .period-cards{flex-direction:column;align-items:center}
+  .cart-sidebar{width:100%;max-width:100vw}
+  .sticky-price-bar{flex-direction:column;height:auto;padding:12px 20px;gap:8px;text-align:center}
+  .sticky-price-bar .left strong{font-size:20px}
+  .progress-bar{gap:4px;flex-wrap:wrap}
+  .progress-label{font-size:11px}
+  .summary-card{padding:20px}
+  .quote-intro h2{font-size:24px}
+  .category-filter{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .payment-form .card-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo">
+    <div class="logo-main"><span class="aqua">AQUA</span><span class="plus">PLUS</span></div>
+    <div class="logo-sub">Piscines et Spas</div>
+  </div>
+  <nav class="nav">
+    <span class="nav-link active" onclick="navigate('quote')">Soumission</span>
+    <span class="nav-link" onclick="navigate('boutique')">Boutique</span>
+    <span class="nav-link" onclick="navigate('booking')">Réserver</span>
+  </nav>
+  <button class="cart-btn" onclick="toggleCart()">
+    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+    <span class="cart-badge" id="cartBadge"></span>
+  </button>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- CART OVERLAY -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-sidebar-header">
+    <h3>VOTRE PANIER (<span id="cartCount">0</span>)</h3>
+    <button class="modal-close" onclick="toggleCart()">&times;</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="row"><span>Sous-total:</span><span id="cartSubtotal">0,00 $</span></div>
+    <div class="row"><span>TPS (5%):</span><span id="cartTPS">0,00 $</span></div>
+    <div class="row"><span>TVQ (9,975%):</span><span id="cartTVQ">0,00 $</span></div>
+    <div class="row total"><span>TOTAL:</span><span id="cartTotal">0,00 $</span></div>
+    <button class="btn-checkout" onclick="startCheckout()">Passer à la caisse →</button>
+    <span class="continue-link" onclick="toggleCart()">Continuer mes achats</span>
+  </div>
+</div>
+
+<!-- VIEWS -->
+<main class="container">
+
+  <!-- QUOTE BUILDER -->
+  <div class="view active" id="viewQuote">
+    <div id="quoteContent"></div>
+  </div>
+
+  <!-- BOUTIQUE -->
+  <div class="view" id="viewBoutique">
+    <div id="boutiqueContent"></div>
+  </div>
+
+  <!-- BOOKING -->
+  <div class="view" id="viewBooking">
+    <div id="bookingContent"></div>
+  </div>
+
+  <!-- CHECKOUT -->
+  <div class="view" id="viewCheckout">
+    <div id="checkoutContent"></div>
+  </div>
+
+</main>
+
+<!-- STICKY PRICE BAR -->
+<div class="sticky-price-bar" id="stickyBar">
+  <div class="left">
+    <span>Votre estimation</span>
+    <strong id="stickyTotal">0 $</strong>
+  </div>
+  <div class="right">
+    <button class="btn-summary" onclick="quoteGoToSummary()">Voir mon résumé →</button>
+  </div>
+</div>
+
+<!-- QUOTE REQUEST MODAL -->
+<div class="modal-overlay" id="quoteModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeQuoteModal()">&times;</button>
+    <div id="quoteModalContent"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+
+const MODEL_IMAGES = {
+  'Diamant': 'AQUARINO MODELES 3D/AQUARINO_Diamant_810_8x10_low.png',
+  'Larimar': 'AQUARINO MODELES 3D/AQUARINO_Larimar_1025_10x25_low.png',
+  'Lazuli': 'AQUARINO MODELES 3D/AQUARINO_Lazuli_1228_12x28_low.png',
+  'Lazuli_1232': 'AQUARINO MODELES 3D/AQUARINO_Lazuli_1232_12x32_low.png',
+  'Opale': 'AQUARINO MODELES 3D/AQUARINO_Opale_816_8x16_low.png',
+  'Opale_1220': 'AQUARINO MODELES 3D/AQUARINO_Opale_1220_12x20_low.png',
+  'Perla': 'AQUARINO MODELES 3D/AQUARINO_Perla_1224b_12x24b_low.png',
+  'Quartz': 'AQUARINO MODELES 3D/AQUARINO_Quartz_1431_14x31_low.png',
+  'Quartz_1436': 'AQUARINO MODELES 3D/AQUARINO_Quartz_1436_14x36_low.png',
+  'Saphir': 'AQUARINO MODELES 3D/AQUARINO_Saphir_1431_14x31_low.png',
+  'Saphir_1436': 'AQUARINO MODELES 3D/AQUARINO_Saphir_1436_14x36_low.png',
+  'Tanza': 'AQUARINO MODELES 3D/AQUARINO_Tanza_811_8x11_low.png',
+  'Topaze': 'AQUARINO MODELES 3D/AQUARINO_Topaze_814_8x14_low.png',
+  'Topaze_1220': 'AQUARINO MODELES 3D/AQUARINO_Topaze_1220_12x20_low.png',
+  'Topaze_1224': 'AQUARINO MODELES 3D/AQUARINO_Topaze_1224_12x24_low.png',
+  'Topaze_1226': 'AQUARINO MODELES 3D/AQUARINO_Topaze_1226_12x26_low.png',
+  'Zircon': 'AQUARINO MODELES 3D/AQUARINO_Zircon_1222_12x22_low.png',
+  'Zircon_1227': 'AQUARINO MODELES 3D/AQUARINO_Zircon_1227_12x27_low.png',
+};
+
+function getModelImage(name, size) {
+  const sizeKey = size ? size.replace(/[^0-9x]/g,'').replace('x','') : '';
+  const combos = [name+'_'+sizeKey, name];
+  for (const k of combos) { if (MODEL_IMAGES[k]) return MODEL_IMAGES[k]; }
+  return MODEL_IMAGES[name] || null;
+}
+
+const POOL_MODELS = [
+  { name:'Diamant', sizes:[{s:"8x10'",d:"3'9\"",p:19500}] },
+  { name:'Larimar', sizes:[{s:"10x25'",d:"4'6\"",p:27000}] },
+  { name:'Lazuli', sizes:[{s:"12x28'",d:"4'10\"",p:32000},{s:"12x32'",d:"4'10\"",p:35500}] },
+  { name:'Opale', sizes:[{s:"8x16'",d:"4'9\"",p:24500},{s:"12x20'",d:"4'10\"",p:28000}] },
+  { name:'Perla', sizes:[{s:"12x24'",d:"4'10\"",p:29500}] },
+  { name:'Quartz', sizes:[{s:"14x31'",d:"4'10\"",p:35000},{s:"14x36'",d:"4'10\"",p:39000}] },
+  { name:'Saphir', sizes:[{s:"14x31'",d:"4'10\"",p:36500},{s:"14x36'",d:"4'10\"",p:41000}] },
+  { name:'Tanza', sizes:[{s:"8x11'",d:"10\"",p:18000}] },
+  { name:'Topaze', sizes:[{s:"8x14'",d:"4'10\"",p:22500},{s:"12x20'",d:"4'10\"",p:28000},{s:"12x24'",d:"4'10\"",p:30500},{s:"12x26'",d:"4'10\"",p:32000}] },
+  { name:'Zircon', sizes:[{s:"12x22'",d:"5'",p:30000},{s:"12x27'",d:"5'",p:33500}] },
+];
+
+const SPA_MODELS = [
+  { name:'Hollow retombée', sizes:[{s:"7'9\" x 7'9\"",d:"3'9\"",p:12500}] },
+  { name:'Hollow', sizes:[{s:"7'9\" x 7'9\"",d:"3'9\"",p:10500}] },
+  { name:'Roslyn', sizes:[{s:"7'4\" x 7'4\"",d:"2'7.5\"",p:8500}] },
+  { name:'Trent', sizes:[{s:"8'6\" x 8'6\"",d:"3'7\"",p:13000}] },
+  { name:'York', sizes:[{s:"7'9\" x 11'4\"",d:"3'",p:14500}] },
+];
+
+const COLORS = {
+  base: [
+    {name:'Sel de mer',hex:'#F5F0E8',premium:false},
+    {name:'Gris arctique',hex:'#C8CDD0',premium:false},
+  ],
+  premium: [
+    {name:'Aqua',hex:'#7EC8D9',premium:true},
+    {name:'Galaxie',hex:'#2C3E6B',premium:true},
+    {name:'Bleu pacifique',hex:'#1A6B8A',premium:true},
+    {name:'Gris océan',hex:'#6B7D8A',premium:true},
+  ]
+};
+
+const POOL_ADDONS = [
+  {name:'Système de chauffage (thermopompe)',price:3800},
+  {name:'Éclairage LED couleur intégré',price:650},
+  {name:'Couverture automatique rétractable',price:5200},
+  {name:'Système au sel',price:950},
+  {name:'Jet de nage (contre-courant)',price:4500},
+  {name:'Escalier intégré gelcoat',price:1200},
+  {name:'Clôture de sécurité (conforme)',price:3500},
+  {name:'Aménagement paysager',price:null},
+];
+
+const SPA_ADDONS = [
+  {name:'Système de chauffage premium',price:1200},
+  {name:'Éclairage d\'ambiance LED',price:450},
+  {name:'Couverture isolante rigide',price:850},
+  {name:'Système audio Bluetooth',price:750},
+  {name:'Aromathérapie intégrée',price:350},
+];
+
+const PRODUCTS = [
+  {id:'C01',cat:'Chimique',name:'Chlore en granules 15 kg',desc:'Traitement choc haute concentration 70%',price:219.99,badge:'Populaire'},
+  {id:'C02',cat:'Chimique',name:'Chlore en pastilles 10 kg',desc:'Dissolution lente pour traitement continu',price:149.99},
+  {id:'C03',cat:'Chimique',name:'pH+ (2 kg)',desc:"Augmente le pH de l'eau",price:18.99},
+  {id:'C04',cat:'Chimique',name:'pH- (2 kg)',desc:"Diminue le pH de l'eau",price:18.99},
+  {id:'C05',cat:'Chimique',name:'Algicide concentré 1L',desc:'Prévient et élimine les algues',price:24.99},
+  {id:'C06',cat:'Chimique',name:'Clarifiant 1L',desc:'Eau cristalline en 24h',price:16.99},
+  {id:'C07',cat:'Chimique',name:'Sel pour piscine 20 kg',desc:'Pour systèmes au sel',price:12.99},
+  {id:'C08',cat:'Chimique',name:'Traitement choc 1.8 kg',desc:'Oxydation rapide sans chlore',price:24.99},
+  {id:'E01',cat:'Entretien',name:'Épuisette de surface',desc:'Filet fin pour feuilles et débris',price:29.99},
+  {id:'E02',cat:'Entretien',name:'Balai de paroi 18"',desc:'Brosse pour parois en fibre de verre',price:34.99},
+  {id:'E03',cat:'Entretien',name:'Aspirateur manuel',desc:'Kit complet avec manche télescopique',price:89.99},
+  {id:'E04',cat:'Entretien',name:'Robot nettoyeur automatique',desc:'Nettoyage fond et parois programmable',price:899.99,badge:'Populaire'},
+  {id:'E05',cat:'Entretien',name:"Trousse d'analyse d'eau",desc:'Testeur pH, chlore, alcalinité',price:39.99},
+  {id:'E06',cat:'Entretien',name:"Manche télescopique 16'",desc:'Aluminium léger, compatible tous accessoires',price:44.99},
+  {id:'V01',cat:'Couvertures',name:"Toile solaire 12x24'",desc:"Réchauffe l'eau naturellement, réduit l'évaporation",price:189.99},
+  {id:'V02',cat:'Couvertures',name:"Toile solaire 14x31'",desc:'Grand format pour piscines familiales',price:249.99},
+  {id:'V03',cat:'Couvertures',name:"Couverture d'hiver 12x24'",desc:'Protection hivernale résistante aux intempéries',price:299.99},
+  {id:'V04',cat:'Couvertures',name:"Couverture d'hiver 14x36'",desc:'Grand format, attaches incluses',price:399.99},
+  {id:'V05',cat:'Couvertures',name:'Couverture de spa',desc:'Isolante rigide, charnière centrale',price:449.99},
+  {id:'F01',cat:'Filtration',name:'Filtre à cartouche',desc:'Remplacement universel, haute capacité',price:69.99},
+  {id:'F02',cat:'Filtration',name:'Sable filtrant 50 lb',desc:'Sable de silice #20 pour filtre à sable',price:29.99},
+  {id:'F03',cat:'Filtration',name:'Pompe 1.5 HP',desc:'Pompe haute performance, silencieuse',price:549.99,badge:'Nouveau'},
+  {id:'F04',cat:'Filtration',name:'Verre filtrant 25 kg',desc:'Alternative écologique au sable',price:54.99,badge:'Nouveau'},
+  {id:'L01',cat:'Éclairage',name:'Ampoule LED piscine',desc:'RGB couleur, télécommande incluse',price:79.99},
+  {id:'L02',cat:'Éclairage',name:'Éclairage solaire flottant',desc:'Set de 3, rechargement solaire',price:49.99,badge:'Populaire'},
+  {id:'L03',cat:'Éclairage',name:'Bande LED contour piscine 5m',desc:'Étanche IP68, couleurs programmables',price:129.99},
+  {id:'A01',cat:'Accessoires',name:'Échelle inox 3 marches',desc:'Acier inoxydable, antidérapante',price:199.99},
+  {id:'A02',cat:'Accessoires',name:'Thermomètre flottant',desc:'Lecture facile, design aquatique',price:14.99},
+  {id:'A03',cat:'Accessoires',name:'Jeu de volleyball piscine',desc:'Filet + ballon, installation facile',price:79.99},
+  {id:'A04',cat:'Accessoires',name:'Flotteur distributeur chlore',desc:'Capacité 3 pastilles, ajustable',price:12.99},
+  {id:'A05',cat:'Accessoires',name:'Douche solaire extérieure',desc:'35L, eau chauffée au soleil',price:249.99},
+  {id:'K01',cat:'Kits',name:"Kit d'ouverture piscine",desc:'Chlore choc, algicide, clarifiant, pH',price:89.99,badge:'Populaire'},
+  {id:'K02',cat:'Kits',name:'Kit de fermeture piscine',desc:'Produits hivernaux complets',price:79.99},
+  {id:'K03',cat:'Kits',name:"Kit d'entretien mensuel",desc:'Approvisionnement 1 mois complet',price:49.99},
+];
+
+const CATEGORIES = ['Tout','Chimique','Entretien','Couvertures','Filtration','Éclairage','Accessoires','Kits'];
+
+const SHIPPING_OPTIONS = [
+  {name:'Ramassage en magasin',price:0,desc:'Prêt en 24h — Québec, QC',label:'Gratuit'},
+  {name:'Livraison locale',price:15,desc:'Région de Québec (2–3 jours)',label:'15,00 $'},
+  {name:'Livraison standard',price:25,desc:'Partout au Québec (3–5 jours ouvrables)',label:'25,00 $'},
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let cart = [];
+let currentView = 'quote';
+let quoteState = { step:1, type:null, model:null, sizeIdx:0, color:null, addons:[], premiumColor:false };
+let checkoutState = { step:1, shipping:0, form:{} };
+let bookingState = { step:1, period:null, week:'', deposit:500 };
+let activeCat = 'Tout';
+
+// ============================================================
+// HELPERS
+// ============================================================
+function fmt(n) {
+  return n.toLocaleString('fr-CA',{minimumFractionDigits:0,maximumFractionDigits:2}).replace(/\u00a0/g,' ') + ' $';
+}
+function fmtDec(n) {
+  return n.toLocaleString('fr-CA',{minimumFractionDigits:2,maximumFractionDigits:2}).replace(/\u00a0/g,' ') + ' $';
+}
+function calcTPS(sub) { return Math.round(sub*0.05*100)/100; }
+function calcTVQ(sub) { return Math.round(sub*0.09975*100)/100; }
+
+function svgPool() {
+  return `<svg viewBox="0 0 80 80" fill="none" stroke="#1C355E" stroke-width="2"><rect x="10" y="25" width="60" height="35" rx="8"/><path d="M15 35c5-5 10 5 15 0s10 5 15 0s10 5 15 0"/><path d="M15 45c5-5 10 5 15 0s10 5 15 0s10 5 15 0"/></svg>`;
+}
+function svgSpa() {
+  return `<svg viewBox="0 0 80 80" fill="none" stroke="#1C355E" stroke-width="2"><ellipse cx="40" cy="45" rx="28" ry="18"/><path d="M25 30c3-8 6-5 8-12"/><path d="M38 28c2-8 5-5 7-12"/><path d="M50 30c3-8 6-5 8-12"/></svg>`;
+}
+function svgProduct() {
+  return `<svg viewBox="0 0 64 64" fill="none" stroke="#1C355E" stroke-width="1.5"><rect x="14" y="20" width="36" height="28" rx="4"/><path d="M14 28h36"/><circle cx="32" cy="38" r="6"/></svg>`;
+}
+function svgCart() {
+  return `<svg viewBox="0 0 64 64" fill="none" stroke="#E0E0E0" stroke-width="2"><path d="M20 20h24l-3 16H23z"/><circle cx="26" cy="42" r="3"/><circle cx="38" cy="42" r="3"/><path d="M16 14h4l2 6"/></svg>`;
+}
+function svgCheck() { return `<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>`; }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function navigate(view) {
+  currentView = view;
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const map = {quote:0,boutique:1,booking:2,checkout:3};
+  document.querySelectorAll('.nav-link')[map[view] !== undefined && map[view] < 3 ? map[view] : -1]?.classList.add('active');
+  document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1)).classList.add('active');
+  document.getElementById('stickyBar').classList.remove('visible');
+  if (view === 'quote') renderQuote();
+  else if (view === 'boutique') renderBoutique();
+  else if (view === 'booking') renderBooking();
+  else if (view === 'checkout') renderCheckout();
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// CART
+// ============================================================
+function toggleCart() {
+  const o = document.getElementById('cartOverlay');
+  const s = document.getElementById('cartSidebar');
+  const isOpen = s.classList.contains('open');
+  if (isOpen) { o.classList.remove('open'); s.classList.remove('open'); }
+  else { o.classList.add('open'); s.classList.add('open'); renderCart(); }
+}
+
+function addToCart(productId) {
+  const p = PRODUCTS.find(x => x.id === productId);
+  if (!p) return;
+  const existing = cart.find(c => c.id === productId);
+  if (existing) existing.qty++;
+  else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+  updateCartBadge();
+  showToast(`✓ ${p.name} ajouté au panier`);
+  const btn = document.querySelector(`[data-product="${productId}"]`);
+  if (btn) {
+    btn.textContent = '✓ Ajouté';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'Ajouter au panier'; btn.classList.remove('added'); }, 1500);
+  }
+  const badge = document.getElementById('cartBadge');
+  badge.classList.remove('bounce');
+  void badge.offsetWidth;
+  badge.classList.add('bounce');
+}
+
+function updateCartBadge() {
+  const total = cart.reduce((s,c) => s+c.qty, 0);
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = total || '';
+  badge.setAttribute('data-count', total);
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const footer = document.getElementById('cartFooter');
+  document.getElementById('cartCount').textContent = cart.reduce((s,c) => s+c.qty, 0);
+  if (cart.length === 0) {
+    container.innerHTML = `<div class="cart-empty">${svgCart()}<p>Votre panier est vide</p><a onclick="toggleCart();navigate('boutique')">Parcourir la boutique →</a></div>`;
+    footer.style.display = 'none';
+    return;
+  }
+  footer.style.display = 'block';
+  container.innerHTML = cart.map((item,i) => `
+    <div class="cart-item">
+      <div class="cart-item-img">${svgProduct()}</div>
+      <div class="cart-item-info">
+        <h4>${item.name}</h4>
+        <div class="qty-controls">
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+        <div class="cart-item-price">${fmtDec(item.price * item.qty)}</div>
+        <button class="cart-remove" onclick="removeFromCart(${i})">Retirer</button>
+      </div>
+    </div>
+  `).join('');
+  const sub = cart.reduce((s,c) => s + c.price*c.qty, 0);
+  const tps = calcTPS(sub);
+  const tvq = calcTVQ(sub);
+  document.getElementById('cartSubtotal').textContent = fmtDec(sub);
+  document.getElementById('cartTPS').textContent = fmtDec(tps);
+  document.getElementById('cartTVQ').textContent = fmtDec(tvq);
+  document.getElementById('cartTotal').textContent = fmtDec(sub+tps+tvq);
+}
+
+function changeQty(i, delta) {
+  cart[i].qty += delta;
+  if (cart[i].qty < 1) cart.splice(i,1);
+  updateCartBadge();
+  renderCart();
+}
+
+function removeFromCart(i) {
+  cart.splice(i,1);
+  updateCartBadge();
+  renderCart();
+}
+
+// ============================================================
+// QUOTE BUILDER
+// ============================================================
+function renderQuote() {
+  const el = document.getElementById('quoteContent');
+  const s = quoteState;
+  if (s.step === 1) renderQuoteStep1(el);
+  else if (s.step === 2) renderQuoteStep2(el);
+  else if (s.step === 3) renderQuoteStep3(el);
+  else if (s.step === 4) renderQuoteStep4(el);
+  else if (s.step === 5) renderQuoteStep5(el);
+}
+
+function quoteProgress(active) {
+  const labels = ['Modèle','Personnaliser','Options','Résumé'];
+  return `<div class="progress-bar">${labels.map((l,i) => {
+    const num = i+1;
+    let cls = num < active ? 'done' : num === active ? 'active' : 'pending';
+    return `<div class="progress-step ${num===active?'active':''}"><div class="progress-circle ${cls}">${num < active ? '✓' : num}</div><span class="progress-label">${l}</span></div>${i<3?`<div class="progress-line ${num<active?'done':''}"></div>`:''}`;
+  }).join('')}</div>`;
+}
+
+function renderQuoteStep1(el) {
+  el.innerHTML = `
+    <div class="quote-intro">
+      <h2>Configurez votre projet</h2>
+      <p>Obtenez une estimation de prix instantanée</p>
+      <div class="type-cards">
+        <div class="type-card" onclick="selectType('pool')">
+          <div class="type-card-img"><img src="AQUARINO MODELES 3D/AQUARINO_Topaze_1224_12x24_low.png" onerror="this.outerHTML='${svgPool()}'" alt="Piscine"></div>
+          <div class="type-card-body">
+            <h3>PISCINE</h3>
+            <p class="price-from">À partir de <strong>19 500 $</strong></p>
+            <span class="cta-link">Configurer →</span>
+          </div>
+        </div>
+        <div class="type-card" onclick="selectType('spa')">
+          <div class="type-card-img">${svgSpa()}</div>
+          <div class="type-card-body">
+            <h3>SPA ENCASTRÉ</h3>
+            <p class="price-from">À partir de <strong>8 500 $</strong></p>
+            <span class="cta-link">Configurer →</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectType(type) {
+  quoteState = { step:2, type, model:null, sizeIdx:0, color:null, addons:[], premiumColor:false };
+  renderQuote();
+}
+
+function renderQuoteStep2(el) {
+  const models = quoteState.type === 'pool' ? POOL_MODELS : SPA_MODELS;
+  el.innerHTML = `
+    <button class="back-btn" onclick="quoteState.step=1;renderQuote()">← Retour</button>
+    ${quoteProgress(1)}
+    <h3 style="text-align:center;margin-bottom:24px;color:var(--navy)">Étape 1 de 4 : Choisissez votre modèle</h3>
+    <div class="model-grid">
+      ${models.map(m => {
+        const img = getModelImage(m.name, m.sizes[0].s);
+        return `<div class="model-card ${quoteState.model && quoteState.model.name===m.name?'selected':''}" onclick="selectModel('${m.name}')">
+          <div class="model-card-img">${img ? `<img src="${img}" onerror="this.outerHTML='${quoteState.type==='pool'?svgPool():svgSpa()}'" alt="${m.name}">` : (quoteState.type==='pool'?svgPool():svgSpa())}</div>
+          <div class="model-card-body">
+            <h4>${m.name}</h4>
+            <span class="size">${m.sizes[0].s}</span>
+            <div class="price">${fmt(m.sizes[0].p)}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function selectModel(name) {
+  const models = quoteState.type === 'pool' ? POOL_MODELS : SPA_MODELS;
+  quoteState.model = models.find(m => m.name === name);
+  quoteState.sizeIdx = 0;
+  quoteState.color = COLORS.base[0];
+  quoteState.premiumColor = false;
+  quoteState.step = 3;
+  renderQuote();
+}
+
+function renderQuoteStep3(el) {
+  const m = quoteState.model;
+  const premiumSurcharge = quoteState.type === 'pool' ? 1500 : 800;
+  let sizeHtml = '';
+  if (m.sizes.length > 1) {
+    sizeHtml = `<div style="margin-bottom:24px"><h4 style="margin-bottom:12px;color:var(--navy)">Taille</h4><div class="size-selector">${m.sizes.map((sz,i) => `<div class="size-option ${quoteState.sizeIdx===i?'selected':''}" onclick="quoteState.sizeIdx=${i};renderQuote()">${sz.s} (${fmt(sz.p)})</div>`).join('')}</div></div>`;
+  }
+  const selectedSize = m.sizes[quoteState.sizeIdx];
+  const img = getModelImage(m.name, selectedSize.s);
+  el.innerHTML = `
+    <button class="back-btn" onclick="quoteState.step=2;renderQuote()">← Retour</button>
+    ${quoteProgress(2)}
+    <h3 style="text-align:center;margin-bottom:24px;color:var(--navy)">Étape 2 de 4 : Personnalisez</h3>
+    ${img ? `<div style="text-align:center;margin-bottom:24px"><img src="${img}" style="max-width:400px;width:100%;border-radius:12px" alt="${m.name}"></div>` : ''}
+    ${sizeHtml}
+    <div class="color-section">
+      <h4>Couleurs de base (incluses)</h4>
+      <div class="color-grid">
+        ${COLORS.base.map(c => `<div class="color-item" onclick="selectColor('${c.name}',false)">
+          <div class="color-swatch ${quoteState.color && quoteState.color.name===c.name?'selected':''}" style="background:${c.hex}"><span class="check">✓</span></div>
+          <span class="color-label">${c.name}</span>
+          <span class="color-price">Inclus</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="color-section">
+      <h4>Couleurs premium (+${fmt(premiumSurcharge)})</h4>
+      <div class="color-grid">
+        ${COLORS.premium.map(c => `<div class="color-item" onclick="selectColor('${c.name}',true)">
+          <div class="color-swatch ${quoteState.color && quoteState.color.name===c.name?'selected':''}" style="background:${c.hex}"><span class="check">✓</span></div>
+          <span class="color-label">${c.name}</span>
+          <span class="color-price">+${fmt(premiumSurcharge)}</span>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <button class="btn-primary" style="max-width:300px" onclick="quoteState.step=4;renderQuote()">Continuer →</button>
+    </div>`;
+}
+
+function selectColor(name, premium) {
+  const all = [...COLORS.base, ...COLORS.premium];
+  quoteState.color = all.find(c => c.name === name);
+  quoteState.premiumColor = premium;
+  renderQuote();
+}
+
+function renderQuoteStep4(el) {
+  const addons = quoteState.type === 'pool' ? POOL_ADDONS : SPA_ADDONS;
+  const total = getQuoteTotal();
+  el.innerHTML = `
+    <button class="back-btn" onclick="quoteState.step=3;renderQuote()">← Retour</button>
+    ${quoteProgress(3)}
+    <h3 style="text-align:center;margin-bottom:24px;color:var(--navy)">Étape 3 de 4 : Options</h3>
+    <div class="addon-list">
+      ${addons.map((a,i) => {
+        const checked = quoteState.addons.includes(i);
+        return `<div class="addon-row ${checked?'checked':''}" onclick="toggleAddon(${i})">
+          <input type="checkbox" ${checked?'checked':''} onclick="event.stopPropagation();toggleAddon(${i})">
+          <span class="addon-name">${a.name}</span>
+          ${a.price !== null ? `<span class="addon-price">+ ${fmt(a.price)}</span>` : `<span class="addon-note">Sur demande</span>`}
+        </div>`;
+      }).join('')}
+    </div>`;
+  document.getElementById('stickyTotal').textContent = fmt(total);
+  document.getElementById('stickyBar').classList.add('visible');
+}
+
+function toggleAddon(i) {
+  const idx = quoteState.addons.indexOf(i);
+  if (idx >= 0) quoteState.addons.splice(idx,1);
+  else quoteState.addons.push(i);
+  renderQuote();
+}
+
+function quoteGoToSummary() {
+  quoteState.step = 5;
+  document.getElementById('stickyBar').classList.remove('visible');
+  renderQuote();
+}
+
+function getQuoteTotal() {
+  if (!quoteState.model) return 0;
+  const base = quoteState.model.sizes[quoteState.sizeIdx].p;
+  const premiumSurcharge = quoteState.premiumColor ? (quoteState.type==='pool'?1500:800) : 0;
+  const addons = quoteState.type === 'pool' ? POOL_ADDONS : SPA_ADDONS;
+  const addonsTotal = quoteState.addons.reduce((s,i) => s + (addons[i].price || 0), 0);
+  return base + premiumSurcharge + addonsTotal;
+}
+
+function renderQuoteStep5(el) {
+  document.getElementById('stickyBar').classList.remove('visible');
+  const m = quoteState.model;
+  const sz = m.sizes[quoteState.sizeIdx];
+  const addons = quoteState.type === 'pool' ? POOL_ADDONS : SPA_ADDONS;
+  const base = sz.p;
+  const premiumSurcharge = quoteState.premiumColor ? (quoteState.type==='pool'?1500:800) : 0;
+  const addonsTotal = quoteState.addons.reduce((s,i) => s + (addons[i].price || 0), 0);
+  const sub = base + premiumSurcharge + addonsTotal;
+  const tps = calcTPS(sub);
+  const tvq = calcTVQ(sub);
+  const total = sub + tps + tvq;
+
+  el.innerHTML = `
+    <button class="back-btn" onclick="quoteState.step=4;renderQuote()">← Retour</button>
+    ${quoteProgress(4)}
+    <h3 style="text-align:center;margin-bottom:24px;color:var(--navy)">Résumé de votre configuration</h3>
+    <div class="summary-card">
+      <div class="summary-row"><span>Modèle:</span><strong>${m.name} ${sz.s}</strong></div>
+      <div class="summary-row"><span>Couleur:</span><strong>${quoteState.color.name}${quoteState.premiumColor?' (premium)':''}</strong></div>
+      <div class="summary-row"><span>Profondeur:</span><strong>${sz.d}</strong></div>
+      ${quoteState.addons.length ? `
+        <div class="summary-divider"></div>
+        <div style="font-weight:600;margin-bottom:8px">Options sélectionnées:</div>
+        ${quoteState.addons.map(i => `<div class="summary-row"><span>✓ ${addons[i].name}</span><span>${addons[i].price?fmt(addons[i].price):'Sur demande'}</span></div>`).join('')}
+      ` : ''}
+      <div class="summary-divider"></div>
+      <div class="summary-row"><span>${quoteState.type==='pool'?'Piscine':'Spa'} (base):</span><span>${fmt(base)}</span></div>
+      ${premiumSurcharge ? `<div class="summary-row"><span>Couleur premium:</span><span>${fmt(premiumSurcharge)}</span></div>` : ''}
+      ${addonsTotal ? `<div class="summary-row"><span>Options:</span><span>${fmt(addonsTotal)}</span></div>` : ''}
+      <div class="summary-row"><span>Sous-total:</span><span>${fmt(sub)}</span></div>
+      <div class="summary-row"><span>TPS (5%):</span><span>${fmt(tps)}</span></div>
+      <div class="summary-row"><span>TVQ (9,975%):</span><span>${fmt(tvq)}</span></div>
+      <div class="summary-row total"><span>ESTIMATION TOTALE:</span><span>${fmt(Math.round(total))}</span></div>
+    </div>
+    <div class="summary-note">Ce prix est une estimation. Le prix final sera confirmé lors de votre soumission personnalisée.</div>
+    <div class="summary-actions">
+      <button class="btn-text" onclick="quoteState.step=4;renderQuote()">← Modifier</button>
+      <button class="btn-primary" onclick="openQuoteModal()">Demander ma soumission →</button>
+      <button class="btn-secondary" onclick="startBookingFromQuote()">Réserver mon installation →</button>
+    </div>`;
+}
+
+// ============================================================
+// QUOTE REQUEST MODAL
+// ============================================================
+function openQuoteModal() {
+  const overlay = document.getElementById('quoteModal');
+  const m = quoteState.model;
+  const sz = m.sizes[quoteState.sizeIdx];
+  const total = getQuoteTotal();
+  const tps = calcTPS(total);
+  const tvq = calcTVQ(total);
+  document.getElementById('quoteModalContent').innerHTML = `
+    <h3>Demander votre soumission</h3>
+    <form id="quoteForm" onsubmit="submitQuoteForm(event)">
+      <div class="form-row">
+        <div class="form-group"><label>Prénom *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="form-group"><label>Nom *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+      </div>
+      <div class="form-group"><label>Courriel *</label><input type="email" required onblur="validateField(this)"><span class="error-msg">Courriel invalide</span></div>
+      <div class="form-group"><label>Téléphone *</label><input type="tel" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+      <div class="form-group"><label>Ville *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+      <div class="form-group"><label>Période souhaitée</label>
+        <select><option>Printemps</option><option>Été</option><option>Automne</option><option>Flexible</option></select>
+      </div>
+      <div class="form-group"><label>Message</label><textarea placeholder="Détails supplémentaires..."></textarea></div>
+      <div class="config-summary">
+        <strong>Votre configuration:</strong><br>
+        ${m.name} ${sz.s} | ${quoteState.color.name} | ${quoteState.addons.length} option${quoteState.addons.length!==1?'s':''}<br>
+        Estimation: ${fmt(Math.round(total+tps+tvq))}
+      </div>
+      <button type="submit" class="btn-primary" style="width:100%">Envoyer ma demande →</button>
+    </form>`;
+  overlay.classList.add('open');
+}
+
+function closeQuoteModal() { document.getElementById('quoteModal').classList.remove('open'); }
+
+function submitQuoteForm(e) {
+  e.preventDefault();
+  const inputs = e.target.querySelectorAll('input[required]');
+  let valid = true;
+  inputs.forEach(inp => { if (!inp.value.trim()) { inp.classList.add('error'); inp.classList.remove('valid'); valid = false; } });
+  if (!valid) return;
+  document.getElementById('quoteModalContent').innerHTML = `
+    <div class="success-state">
+      <div class="success-check">${svgCheck()}</div>
+      <h3>Merci!</h3>
+      <p>Votre demande a été envoyée. Notre équipe vous contactera dans les 24h.</p>
+      <button class="btn-primary" style="margin-top:24px;max-width:300px" onclick="closeQuoteModal();quoteState={step:1,type:null,model:null,sizeIdx:0,color:null,addons:[],premiumColor:false};renderQuote()">Retour à l'accueil</button>
+    </div>`;
+}
+
+function validateField(inp) {
+  if (inp.required && !inp.value.trim()) { inp.classList.add('error'); inp.classList.remove('valid'); }
+  else if (inp.type === 'email' && inp.value && !/\S+@\S+\.\S+/.test(inp.value)) { inp.classList.add('error'); inp.classList.remove('valid'); }
+  else { inp.classList.remove('error'); inp.classList.add('valid'); }
+}
+
+// ============================================================
+// BOUTIQUE
+// ============================================================
+function renderBoutique() {
+  const el = document.getElementById('boutiqueContent');
+  const filtered = activeCat === 'Tout' ? PRODUCTS : PRODUCTS.filter(p => p.cat === activeCat);
+  el.innerHTML = `
+    <div class="boutique-header">
+      <h2>Boutique AquaPlus</h2>
+      <p>Tout pour l'entretien de votre piscine et spa</p>
+    </div>
+    <div class="category-filter">
+      ${CATEGORIES.map(c => `<span class="pill ${activeCat===c?'active':''}" onclick="activeCat='${c}';renderBoutique()">${c}</span>`).join('')}
+    </div>
+    ${filtered.length ? `<div class="product-grid">
+      ${filtered.map(p => `<div class="product-card">
+        <div class="product-img">
+          ${svgProduct()}
+          ${p.badge ? `<span class="product-badge ${p.badge==='Populaire'?'populaire':'nouveau'}">${p.badge}</span>` : ''}
+        </div>
+        <div class="product-body">
+          <h4>${p.name}</h4>
+          <p class="desc">${p.desc}</p>
+          <div class="price">${fmtDec(p.price)}</div>
+          <button class="btn-add" data-product="${p.id}" onclick="addToCart('${p.id}')">Ajouter au panier</button>
+        </div>
+      </div>`).join('')}
+    </div>` : `<div class="empty-state">${svgProduct()}<p>Aucun produit trouvé</p><a onclick="activeCat='Tout';renderBoutique()">Voir toutes les catégories</a></div>`}`;
+}
+
+// ============================================================
+// CHECKOUT
+// ============================================================
+function startCheckout() {
+  if (cart.length === 0) return;
+  toggleCart();
+  checkoutState = { step:1, shipping:0, form:{} };
+  navigate('checkout');
+}
+
+function renderCheckout() {
+  const el = document.getElementById('checkoutContent');
+  if (checkoutState.step === 1) renderCheckoutStep1(el);
+  else if (checkoutState.step === 2) renderCheckoutStep2(el);
+  else if (checkoutState.step === 3) renderCheckoutStep3(el);
+  else if (checkoutState.step === 4) renderCheckoutConfirm(el);
+}
+
+function checkoutProgress(active) {
+  const labels = ['Livraison','Expédition','Paiement'];
+  return `<div class="progress-bar">${labels.map((l,i) => {
+    const num = i+1;
+    let cls = num < active ? 'done' : num === active ? 'active' : 'pending';
+    return `<div class="progress-step ${num===active?'active':''}"><div class="progress-circle ${cls}">${num < active ? '✓' : num}</div><span class="progress-label">${l}</span></div>${i<2?`<div class="progress-line ${num<active?'done':''}"></div>`:''}`;
+  }).join('')}</div>`;
+}
+
+function renderCheckoutStep1(el) {
+  el.innerHTML = `
+    <div class="checkout-container">
+      <button class="back-btn" onclick="navigate('boutique')">← Retour à la boutique</button>
+      ${checkoutProgress(1)}
+      <h2>Livraison</h2>
+      <form id="shippingForm" onsubmit="event.preventDefault();checkoutState.step=2;renderCheckout()">
+        <div class="form-row">
+          <div class="form-group"><label>Prénom *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+          <div class="form-group"><label>Nom *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        </div>
+        <div class="form-group"><label>Courriel *</label><input type="email" required onblur="validateField(this)"><span class="error-msg">Courriel invalide</span></div>
+        <div class="form-group"><label>Téléphone *</label><input type="tel" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="form-group"><label>Adresse *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="form-group"><label>Appartement</label><input type="text"></div>
+        <div class="form-row">
+          <div class="form-group"><label>Ville *</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+          <div class="form-group"><label>Province *</label><select required><option>Québec</option><option>Ontario</option><option>Nouveau-Brunswick</option><option>Alberta</option><option>Colombie-Britannique</option></select></div>
+        </div>
+        <div class="form-group"><label>Code postal *</label><input type="text" required placeholder="A1A 1A1" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <button type="submit" class="btn-primary" style="width:100%;margin-top:16px">Continuer →</button>
+      </form>
+    </div>`;
+}
+
+function renderCheckoutStep2(el) {
+  el.innerHTML = `
+    <div class="checkout-container">
+      <button class="back-btn" onclick="checkoutState.step=1;renderCheckout()">← Retour</button>
+      ${checkoutProgress(2)}
+      <h2>Mode de livraison</h2>
+      <div class="shipping-options">
+        ${SHIPPING_OPTIONS.map((opt,i) => `
+          <div class="shipping-option ${checkoutState.shipping===i?'selected':''}" onclick="checkoutState.shipping=${i};renderCheckout()">
+            <input type="radio" name="shipping" ${checkoutState.shipping===i?'checked':''}>
+            <div class="info"><h4>${opt.name}</h4><p>${opt.desc}</p></div>
+            <span class="ship-price">${opt.label}</span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="checkoutState.step=3;renderCheckout()">Continuer →</button>
+    </div>`;
+}
+
+function renderCheckoutStep3(el) {
+  const sub = cart.reduce((s,c) => s+c.price*c.qty, 0);
+  const ship = SHIPPING_OPTIONS[checkoutState.shipping].price;
+  const taxable = sub + ship;
+  const tps = calcTPS(taxable);
+  const tvq = calcTVQ(taxable);
+  const total = taxable + tps + tvq;
+
+  el.innerHTML = `
+    <div class="checkout-container">
+      <button class="back-btn" onclick="checkoutState.step=2;renderCheckout()">← Retour</button>
+      ${checkoutProgress(3)}
+      <h2>Paiement sécurisé 🔒</h2>
+      <form class="payment-form" onsubmit="event.preventDefault();checkoutState.step=4;renderCheckout()">
+        <div class="form-group"><label>Numéro de carte</label><input type="text" required placeholder="1234 5678 9012 3456" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="card-row">
+          <div class="form-group"><label>Date d'expiration</label><input type="text" required placeholder="MM/AA" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+          <div class="form-group"><label>CVC</label><input type="text" required placeholder="123" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        </div>
+        <div class="form-group"><label>Nom sur la carte</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="order-summary-box">
+          <h4 style="margin-bottom:12px;color:var(--navy)">Résumé</h4>
+          <div class="summary-row"><span>${cart.reduce((s,c)=>s+c.qty,0)} article${cart.reduce((s,c)=>s+c.qty,0)!==1?'s':''}</span><span>${fmtDec(sub)}</span></div>
+          <div class="summary-row"><span>${SHIPPING_OPTIONS[checkoutState.shipping].name}</span><span>${SHIPPING_OPTIONS[checkoutState.shipping].label}</span></div>
+          <div class="summary-row"><span>TPS (5%)</span><span>${fmtDec(tps)}</span></div>
+          <div class="summary-row"><span>TVQ (9,975%)</span><span>${fmtDec(tvq)}</span></div>
+          <div class="summary-row total"><span>TOTAL</span><span>${fmtDec(total)}</span></div>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;margin-top:20px">Confirmer le paiement →</button>
+      </form>
+    </div>`;
+}
+
+function renderCheckoutConfirm(el) {
+  const orderNum = '#AQ-2026-' + String(Math.floor(1000+Math.random()*9000));
+  const sub = cart.reduce((s,c) => s+c.price*c.qty, 0);
+  const ship = SHIPPING_OPTIONS[checkoutState.shipping].price;
+  const taxable = sub + ship;
+  const total = taxable + calcTPS(taxable) + calcTVQ(taxable);
+
+  el.innerHTML = `
+    <div class="checkout-container">
+      <div class="success-state">
+        <div class="success-check">${svgCheck()}</div>
+        <h3>Merci pour votre commande!</h3>
+        <p>Numéro de commande: <strong>${orderNum}</strong></p>
+        <p>Un courriel de confirmation a été envoyé.</p>
+      </div>
+      <div class="summary-card" style="margin-top:24px">
+        <h3>Résumé de la commande</h3>
+        ${cart.map(c => `<div class="summary-row"><span>${c.name} × ${c.qty}</span><span>${fmtDec(c.price*c.qty)}</span></div>`).join('')}
+        <div class="summary-divider"></div>
+        <div class="summary-row total"><span>Total payé</span><span>${fmtDec(total)}</span></div>
+      </div>
+      <div style="text-align:center;margin-top:24px">
+        <button class="btn-primary" style="max-width:300px" onclick="cart=[];updateCartBadge();navigate('boutique')">Retour à la boutique</button>
+      </div>
+    </div>`;
+  cart = [];
+  updateCartBadge();
+}
+
+// ============================================================
+// BOOKING
+// ============================================================
+function startBookingFromQuote() {
+  bookingState = { step:1, period:null, week:'', deposit:500 };
+  navigate('booking');
+}
+
+function renderBooking() {
+  const el = document.getElementById('bookingContent');
+  if (!quoteState.model) {
+    el.innerHTML = `<div class="empty-state"><p>Veuillez d'abord configurer votre projet dans la soumission.</p><a onclick="navigate('quote')" style="color:var(--cta);cursor:pointer">Aller à la soumission →</a></div>`;
+    return;
+  }
+  if (bookingState.step === 1) renderBookingStep1(el);
+  else if (bookingState.step === 2) renderBookingStep2(el);
+  else if (bookingState.step === 3) renderBookingStep3(el);
+  else if (bookingState.step === 4) renderBookingStep4(el);
+}
+
+function renderBookingStep1(el) {
+  const m = quoteState.model;
+  const sz = m.sizes[quoteState.sizeIdx];
+  const total = getQuoteTotal();
+  const tps = calcTPS(total);
+  const tvq = calcTVQ(total);
+  const periods = [
+    {name:'PRINTEMPS',dates:'Avr — Mai',avail:4,color:'green',label:'disponibles'},
+    {name:'ÉTÉ',dates:'Juin — Août',avail:2,color:'orange',label:'Presque complet'},
+    {name:'AUTOMNE',dates:'Sep — Oct',avail:6,color:'green',label:'disponibles'},
+  ];
+  const weeks = {
+    'PRINTEMPS':['Semaine du 6 avril','Semaine du 13 avril','Semaine du 20 avril','Semaine du 27 avril','Semaine du 4 mai','Semaine du 11 mai','Semaine du 18 mai','Semaine du 25 mai'],
+    'ÉTÉ':['Semaine du 1 juin','Semaine du 8 juin','Semaine du 15 juin','Semaine du 22 juin','Semaine du 29 juin','Semaine du 6 juillet','Semaine du 13 juillet','Semaine du 20 juillet','Semaine du 27 juillet','Semaine du 3 août','Semaine du 10 août','Semaine du 17 août','Semaine du 24 août'],
+    'AUTOMNE':['Semaine du 7 septembre','Semaine du 14 septembre','Semaine du 21 septembre','Semaine du 28 septembre','Semaine du 5 octobre','Semaine du 12 octobre','Semaine du 19 octobre','Semaine du 26 octobre'],
+  };
+  el.innerHTML = `
+    <div class="booking-header"><h2>Réservez votre installation</h2></div>
+    <div class="booking-config">
+      <strong>Votre config:</strong> ${m.name} ${sz.s} ${quoteState.color.name}<br>
+      <strong>Estimation:</strong> ${fmt(Math.round(total+tps+tvq))}
+    </div>
+    <div class="period-cards">
+      ${periods.map(p => `<div class="period-card ${bookingState.period===p.name?'selected':''}" onclick="bookingState.period='${p.name}';renderBooking()">
+        <h4>${p.name}</h4>
+        <div class="period-dates">${p.dates}</div>
+        <div class="avail"><span class="avail-dot ${p.color}"></span>${p.avail} ${p.label}</div>
+      </div>`).join('')}
+    </div>
+    ${bookingState.period ? `<div class="week-selector">
+      <label style="display:block;margin-bottom:8px;font-weight:500">Semaine préférée (optionnel):</label>
+      <select onchange="bookingState.week=this.value">
+        <option value="">Sélectionnez une semaine</option>
+        ${weeks[bookingState.period].map(w => `<option value="${w}" ${bookingState.week===w?'selected':''}>${w}</option>`).join('')}
+      </select>
+    </div>` : ''}
+    <div style="text-align:center">
+      <button class="btn-primary" style="max-width:300px" ${!bookingState.period?'disabled style="max-width:300px;opacity:0.5;cursor:not-allowed"':''} onclick="if(bookingState.period){bookingState.step=2;renderBooking()}">Continuer →</button>
+    </div>`;
+}
+
+function renderBookingStep2(el) {
+  el.innerHTML = `
+    <button class="back-btn" onclick="bookingState.step=1;renderBooking()">← Retour</button>
+    <h2 style="text-align:center;color:var(--navy);margin-bottom:24px">Choisissez votre dépôt</h2>
+    <div class="deposit-options">
+      <div class="deposit-card ${bookingState.deposit===500?'selected':''}" onclick="bookingState.deposit=500;renderBooking()">
+        <input type="radio" name="deposit" ${bookingState.deposit===500?'checked':''}>
+        <div class="info">
+          <h4>DÉPÔT STANDARD</h4>
+          <div class="dep-price">500 $</div>
+          <p>Réserve votre plage d'installation</p>
+        </div>
+      </div>
+      <div class="deposit-card ${bookingState.deposit===1000?'selected':''}" onclick="bookingState.deposit=1000;renderBooking()">
+        <input type="radio" name="deposit" ${bookingState.deposit===1000?'checked':''}>
+        <div class="info">
+          <h4>DÉPÔT PREMIUM</h4>
+          <div class="dep-price">1 000 $</div>
+          <p>Installation prioritaire + consultation design incluse</p>
+        </div>
+        <span class="pop-badge">Populaire</span>
+      </div>
+    </div>
+    <div class="deposit-note">
+      ⓘ Votre dépôt sera déduit du montant total. Remboursable jusqu'à 30 jours avant la date d'installation.
+    </div>
+    <div style="text-align:center">
+      <button class="btn-primary" style="max-width:300px" onclick="bookingState.step=3;renderBooking()">Procéder au paiement →</button>
+    </div>`;
+}
+
+function renderBookingStep3(el) {
+  el.innerHTML = `
+    <div class="checkout-container">
+      <button class="back-btn" onclick="bookingState.step=2;renderBooking()">← Retour</button>
+      <h2>Paiement sécurisé 🔒</h2>
+      <form class="payment-form" onsubmit="event.preventDefault();bookingState.step=4;renderBooking()">
+        <div class="form-group"><label>Numéro de carte</label><input type="text" required placeholder="1234 5678 9012 3456" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="card-row">
+          <div class="form-group"><label>Date d'expiration</label><input type="text" required placeholder="MM/AA" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+          <div class="form-group"><label>CVC</label><input type="text" required placeholder="123" onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        </div>
+        <div class="form-group"><label>Nom sur la carte</label><input type="text" required onblur="validateField(this)"><span class="error-msg">Ce champ est requis</span></div>
+        <div class="order-summary-box">
+          <div class="summary-row"><span>Dépôt de réservation</span><span>${fmt(bookingState.deposit)}</span></div>
+          <div class="summary-row total"><span>TOTAL</span><span>${fmt(bookingState.deposit)}</span></div>
+        </div>
+        <button type="submit" class="btn-primary" style="width:100%;margin-top:20px">Confirmer le paiement →</button>
+      </form>
+    </div>`;
+}
+
+function renderBookingStep4(el) {
+  const m = quoteState.model;
+  const sz = m.sizes[quoteState.sizeIdx];
+  const addons = quoteState.type === 'pool' ? POOL_ADDONS : SPA_ADDONS;
+  const total = getQuoteTotal();
+  const tps = calcTPS(total);
+  const tvq = calcTVQ(total);
+  const resNum = '#AQ-RES-2026-' + String(Math.floor(1000+Math.random()*9000));
+  const periodMap = {'PRINTEMPS':'Printemps 2026','ÉTÉ':'Été 2026','AUTOMNE':'Automne 2026'};
+
+  el.innerHTML = `
+    <div class="checkout-container">
+      <div class="success-state">
+        <div class="success-check">${svgCheck()}</div>
+        <h3>Réservation confirmée</h3>
+        <p>Numéro de réservation: <strong>${resNum}</strong></p>
+      </div>
+      <div class="confirm-card" style="margin-top:24px;text-align:left">
+        <div class="row"><span>Période:</span><strong>${periodMap[bookingState.period]}</strong></div>
+        ${bookingState.week ? `<div class="row"><span>Semaine:</span><strong>${bookingState.week}</strong></div>` : ''}
+        <div class="row"><span>Dépôt payé:</span><strong>${fmt(bookingState.deposit)}</strong></div>
+        <div class="row"><span>Modèle:</span><strong>${m.name} ${sz.s} — ${quoteState.color.name}</strong></div>
+        ${quoteState.addons.length ? `<div class="row"><span>Options:</span><strong>${quoteState.addons.map(i=>addons[i].name).join(', ')}</strong></div>` : ''}
+        <div class="row"><span>Estimation:</span><strong>${fmt(Math.round(total+tps+tvq))}</strong></div>
+        <div class="steps">
+          <strong>Prochaines étapes:</strong><br>
+          Notre équipe vous contactera dans les 48h pour confirmer les détails de votre projet.<br><br>
+          📧 Un courriel de confirmation a été envoyé.
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn-secondary" style="max-width:250px" onclick="alert('Événement ajouté au calendrier (simulé)')">Ajouter au calendrier</button>
+        <button class="btn-primary" style="max-width:250px" onclick="quoteState={step:1,type:null,model:null,sizeIdx:0,color:null,addons:[],premiumColor:false};navigate('quote')">Retour à l'accueil</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+renderQuote();
+</script>
+</body>
+</html>
